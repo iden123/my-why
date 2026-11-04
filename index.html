@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Why</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1f1a1a, #0f0c0c);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      color: white;
+      position: relative;
+    }
+
+    /* Screen Management */
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+      z-index: 10;
+    }
+
+    .screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* ----------------------------------
+       SCREEN 1: LAMP ENTRANCE
+    ---------------------------------- */
+    #screen-lamp {
+      background: #0a0808;
+    }
+
+    .lamp-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lamp {
+      position: relative;
+      width: 120px;
+      height: 90px;
+      background: #3a3230;
+      clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+      transition: background 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .lamp-light {
+      position: absolute;
+      top: 90px;
+      width: 300px;
+      height: 350px;
+      background: radial-gradient(ellipse at top, rgba(255, 235, 170, 0.45) 0%, rgba(255, 220, 130, 0) 75%);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+
+    .lamp-cord {
+      width: 4px;
+      height: 80px;
+      background: #bfa880;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .lamp-handle {
+      width: 16px;
+      height: 16px;
+      background: #f4ebd0;
+      border-radius: 50%;
+      position: absolute;
+      bottom: -12px;
+      left: -6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .lamp-container.is-on .lamp {
+      background: #e6c88b;
+      box-shadow: 0 0 30px #ffe599;
+    }
+
+    .lamp-container.is-on .lamp-light {
+      opacity: 1;
+    }
+
+    .welcome-box {
+      margin-top: 40px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+    }
+
+    .lamp-container.is-on ~ .welcome-box {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .welcome-box h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 44px;
+      color: #ffe599;
+      margin-bottom: 8px;
+      text-shadow: 0 0 10px rgba(255, 229, 153, 0.5);
+    }
+
+    .welcome-box p {
+      font-family: 'Special Elite', monospace;
+      font-size: 18px;
+      color: #f4ebd0;
+      margin-bottom: 24px;
+    }
+
+    .btn-action {
+      background-color: #3a3230;
+      border: 2px solid #bfa880;
+      color: #f4ebd0;
+      padding: 12px 30px;
+      font-family: 'Special Elite', monospace;
+      font-weight: bold;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      font-size: 16px;
+    }
+
+    .btn-action:hover {
+      background-color: #bfa880;
+      color: #1a1616;
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(191, 168, 128, 0.5);
+    }
+
+    .btn-action:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* ----------------------------------
+       SCREEN 2: BASKETBALL GAME
+    ---------------------------------- */
+    #screen-game {
+      background: linear-gradient(135deg, #181414, #0b0909);
+    }
+
+    .game-header {
+      text-align: center;
+      margin-bottom: 20px;
+      font-family: 'Special Elite', monospace;
+    }
+
+    .hoop-area {
+      position: relative;
+      width: 320px;
+      height: 220px;
+      border: 2px dashed rgba(191, 168, 128, 0.3);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 15px;
+      margin-bottom: 30px;
+    }
+
+    .backboard {
+      width: 120px;
+      height: 85px;
+      border: 4px solid #fff;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .rim {
+      width: 60px;
+      height: 12px;
+      background: #ff5722;
+      border-radius: 6px;
+      position: relative;
+      top: 6px;
+      box-shadow: 0 4px 10px rgba(255, 87, 34, 0.5);
+    }
+
+    .net {
+      width: 46px;
+      height: 45px;
+      border-left: 2px dashed #fff;
+      border-right: 2px dashed #fff;
+      border-bottom: 2px dashed #fff;
+      margin: 0 auto;
+      border-radius: 0 0 10px 10px;
+      opacity: 0.7;
+    }
+
+    .balls-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .photo-card {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      border: 3px solid #bfa880;
+      background-size: cover;
+      background-position: center;
+      cursor: grab;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .photo-card:hover {
+      transform: scale(1.1);
+    }
+
+    /* Modal Image View */
+    .photo-modal {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease;
+    }
+
+    .photo-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .photo-modal img {
+      max-width: 80%;
+      max-height: 60vh;
+      border-radius: 10px;
+      border: 4px solid #bfa880;
+      box-shadow: 0 0 25px rgba(191, 168, 128, 0.4);
+      margin-bottom: 20px;
+    }
+
+    /* ----------------------------------
+       SCREEN 3: LETTER & FLOWERS
+    ---------------------------------- */
+    #particles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      top: -20px;
+      color: rgba(255, 182, 193, 0.7);
+      animation: fall linear forwards;
+      filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.5));
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Heart Outline Background */
+    .heart-mosaic-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      z-index: 1;
+      opacity: 0.35;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      pointer-events: none;
+    }
+
+    body.is-open .heart-mosaic-wrapper {
+      opacity: 0.75;
+      transform: translate(-50%, -55%) scale(1.08);
+    }
+
+    .heart-mosaic {
+      display: grid;
+      grid-template-columns: repeat(8, 42px);
+      grid-template-rows: repeat(6, 42px);
+      gap: 4px;
+    }
+
+    .mosaic-tile {
+      width: 42px;
+      height: 42px;
+      border-radius: 4px;
+    }
+
+    .mosaic-tile.filled {
+      background-color: #8d4034;
+      box-shadow: 0 0 10px rgba(255, 111, 97, 0.6);
+    }
+
+    .mosaic-tile.empty {
+      background: transparent;
+    }
+
+    /* Envelope */
+    .envelope-wrapper {
+      position: relative;
+      z-index: 5;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    #envelope {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      margin-left: auto;
+      margin-right: auto;
+      top: 80px;
+      background-color: #8d4034;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      transition: box-shadow 0.4s ease;
+    }
+
+    #envelope.open {
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .front {
+      position: absolute;
+      width: 0;
+      height: 0;
+      z-index: 3;
+    }
+
+    .flap {
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-top: 110px solid #723228;
+      top: 0;
+      transform-origin: top;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 5;
+    }
+
+    .pocket {
+      border-left: 150px solid #8d4034;
+      border-right: 150px solid #8d4034;
+      border-bottom: 100px solid #5a251e;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      bottom: 0;
+      z-index: 4;
+    }
+
+    .letter {
+      position: absolute;
+      background-color: #f4ebd0;
+      background-image: radial-gradient(#e3d4b2 15%, transparent 16%);
+      background-size: 16px 16px;
+      width: 260px;
+      height: 170px;
+      top: 15px;
+      left: 20px;
+      border-radius: 4px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2;
+      padding: 15px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .letter-inner {
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 5px;
+      scrollbar-width: thin;
+      scrollbar-color: #bfa880 transparent;
+    }
+
+    .letter-inner::-webkit-scrollbar { width: 4px; }
+    .letter-inner::-webkit-scrollbar-thumb { background: #bfa880; border-radius: 4px; }
+
+    .paragraph {
+      font-family: 'Caveat', cursive;
+      font-size: 17px;
+      color: #2c221e;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    #envelope.open .flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    #envelope.open .letter {
+      transform: translateY(-210px) scale(1.15);
+      height: 300px;
+      width: 280px;
+      left: 10px;
+      z-index: 6;
+      opacity: 1;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    #envelope.open .paragraph {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #envelope.open .paragraph:nth-child(1) { transition-delay: 0.3s; }
+    #envelope.open .paragraph:nth-child(2) { transition-delay: 0.4s; }
+    #envelope.open .paragraph:nth-child(3) { transition-delay: 0.5s; }
+    #envelope.open .paragraph:nth-child(4) { transition-delay: 0.6s; }
+    #envelope.open .paragraph:nth-child(5) { transition-delay: 0.7s; }
+    #envelope.open .paragraph:nth-child(6) { transition-delay: 0.8s; }
+    #envelope.open .paragraph:nth-child(7) { transition-delay: 0.9s; }
+
+    #envelope.close .flap {
+      transform: rotateX(0deg);
+      z-index: 5;
+    }
+
+    #envelope.close .letter {
+      transform: translateY(0) scale(1);
+      height: 170px;
+      width: 260px;
+      left: 20px;
+      z-index: 2;
+      opacity: 0.9;
+    }
+
+    #envelope.close .paragraph {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.2s ease;
+    }
+
+    .buttons {
+      margin-top: 110px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* Animated Growing Flowers CSS */
+    .svg-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .flower-stem {
+      animation: bottomToTop 3.5s ease forwards;
+      transform-origin: bottom center;
+    }
+
+    @keyframes bottomToTop {
+      from { transform: translateY(350px); }
+      to { transform: translateY(0px); }
+    }
+
+    .flower-head {
+      animation: flowerGrow 3s ease forwards 1s;
+      transform-origin: center;
+      transform-box: fill-box;
+      transform: scale(0);
+    }
+
+    @keyframes flowerGrow {
+      to { transform: scale(1); }
+    }
+
+    .flower-leaf {
+      animation: leafGrow 2s ease forwards 1.5s;
+      transform-origin: bottom center;
+      transform-box: fill-box;
+      transform: scale(0);
+    }
+
+    @keyframes leafGrow {
+      to { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Audio Element linked to your GitHub song file (Volume set to 100%) -->
+  <audio id="bgMusic" loop>
+    <source src="song.mp3" type="audio/mpeg">
+    <source src="song.MP3" type="audio/mpeg">
+  </audio>
+
+  <!-- Ambient Particles -->
+  <div id="particles-container"></div>
+
+  <!-- SCREEN 1: LAMP ENTRANCE -->
+  <div id="screen-lamp" class="screen">
+    <div class="lamp-container" id="lampContainer">
+      <div class="lamp"></div>
+      <div class="lamp-light"></div>
+      <div class="lamp-cord" id="lampCord">
+        <div class="lamp-handle"></div>
+      </div>
+    </div>
+    <div class="welcome-box">
+      <h1>Welcome Lariba</h1>
+      <p>Would you like to proceed?</p>
+      <button class="btn-action" id="btnLampProceed">Proceed</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: BASKETBALL GAME -->
+  <div id="screen-game" class="screen hidden">
+    <div class="game-header">
+      <h2>Score all 3 shots into the hoop!</h2>
+      <p style="font-size: 14px; color: #bfa880; margin-top: 5px;">(Click each photo to score)</p>
+    </div>
+
+    <div class="hoop-area" id="hoopArea">
+      <div class="backboard">
+        <div class="rim">
+          <div class="net"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="balls-container" id="ballsContainer">
+      <div class="photo-card" style="background-image: url('photo1.jpg');" data-img="photo1.jpg"></div>
+      <div class="photo-card" style="background-image: url('photo2.jpg');" data-img="photo2.jpg"></div>
+      <div class="photo-card" style="background-image: url('photo3.jpg');" data-img="photo3.jpg"></div>
+    </div>
+
+    <button class="btn-action hidden" id="btnGameProceed" style="margin-top: 30px;">Continue to Letter</button>
+  </div>
+
+  <!-- PHOTO PREVIEW MODAL -->
+  <div class="photo-modal" id="photoModal">
+    <img id="modalImg" src="" alt="Memory">
+    <button class="btn-action" id="btnCloseModal">Next Shot</button>
+  </div>
+
+  <!-- SCREEN 3: LETTER & FLOWERS -->
+  <div id="screen-letter" class="screen hidden">
+    <!-- Heart Outline Background -->
+    <div class="heart-mosaic-wrapper">
+      <div class="heart-mosaic" id="heartMosaic"></div>
+    </div>
+
+    <!-- Envelope Container -->
+    <div class="envelope-wrapper">
+      <div id="envelope" class="close">
+        <div class="front flap"></div>
+        <div class="front pocket"></div>
+
+        <div class="letter">
+          <div class="letter-inner">
+            <p class="paragraph">You always ask me “Why do I like you?” And I never know what to say because there is a lot I could tell you.</p>
+            <p class="paragraph">From your smile, your personality, your humor (still not funnier than me) to every little detail about you, you are not just my favorite person you are also my favorite kiss, my favorite hug.</p>
+            <p class="paragraph">Of course, you are not perfect and neither am I. Sometimes you hurt me unintentionally, but instead of staying angry you always want to know what’s wrong to always try and fix it.</p>
+            <p class="paragraph">You are mature and actually know your worth and that makes me actually forced to be a better person so that I don’t lose you.</p>
+            <p class="paragraph">I also appreciate the fact that you actually sacrifice for me be it the gifts or just the time we spend together.</p>
+            <p class="paragraph">I might not have the perfect answer as to Why I like you, honestly I don’t have an answer, but all I can say is that you make me happy and that’s enough for me.</p>
+            <p class="paragraph">I can’t promise you to be a perfect boyfriend, but I will promise to care for you best way I know how.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button id="open" class="btn-action">OPEN</button>
+      </div>
+    </div>
+
+    <!-- SVG Growing Flowers Design -->
+    <div class="svg-container">
+      <svg width="100%" height="100%" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="stemGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#7fd9cd" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#2d5a52" stop-opacity="0.9" />
+          </linearGradient>
+        </defs>
+        <!-- Flower 1 (Left) -->
+        <g class="flower-stem">
+          <path d="M 250 600 Q 240 450 260 350" fill="none" stroke="url(#stemGradient)" stroke-width="6"/>
+          <path d="M 255 480 Q 220 460 210 440 Q 240 450 255 480" fill="#7fd9cd" class="flower-leaf"/>
+          <g transform="translate(260, 350)" class="flower-head">
+            <circle cx="0" cy="0" r="18" fill="#ffb6c1"/>
+            <circle cx="-15" cy="-15" r="12" fill="#ff69b4"/>
+            <circle cx="15" cy="-15" r="12" fill="#ff69b4"/>
+            <circle cx="15" cy="15" r="12" fill="#ff69b4"/>
+            <circle cx="-15" cy="15" r="12" fill="#ff69b4"/>
+            <circle cx="0" cy="0" r="8" fill="#fff"/>
+          </g>
+        </g>
+        <!-- Flower 2 (Right) -->
+        <g class="flower-stem" style="animation-delay: 0.4s;">
+          <path d="M 550 600 Q 570 420 540 300" fill="none" stroke="url(#stemGradient)" stroke-width="7"/>
+          <path d="M 545 450 Q 580 430 590 410 Q 560 420 545 450" fill="#7fd9cd" class="flower-leaf"/>
+          <g transform="translate(540, 300)" class="flower-head">
+            <circle cx="0" cy="0" r="22" fill="#ffb6c1"/>
+            <circle cx="-18" cy="-18" r="14" fill="#ff1493"/>
+            <circle cx="18" cy="-18" r="14" fill="#ff1493"/>
+            <circle cx="18" cy="18" r="14" fill="#ff1493"/>
+            <circle cx="-18" cy="18" r="14" fill="#ff1493"/>
+            <circle cx="0" cy="0" r="10" fill="#ffe599"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    // Audio Setup
+    const bgMusic = document.getElementById('bgMusic');
+    bgMusic.volume = 1.0; // 100% Volume
+
+    // --- LAMP ENTRANCE LOGIC ---
+    const lampCord = document.getElementById('lampCord');
+    const lampContainer = document.getElementById('lampContainer');
+    const btnLampProceed = document.getElementById('btnLampProceed');
+
+    lampCord.addEventListener('click', () => {
+      lampContainer.classList.toggle('is-on');
+      
+      // Play the song immediately when the lamp is turned on
+      if (lampContainer.classList.contains('is-on')) {
+        bgMusic.play().catch(e => console.log("Audio play blocked/waiting:", e));
+      } else {
+        bgMusic.pause();
+      }
+    });
+
+    btnLampProceed.addEventListener('click', () => {
+      document.getElementById('screen-lamp').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+    });
+
+    // --- BASKETBALL GAME LOGIC ---
+    const photoCards = document.querySelectorAll('.photo-card');
+    const photoModal = document.getElementById('photoModal');
+    const modalImg = document.getElementById('modalImg');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnGameProceed = document.getElementById('btnGameProceed');
+
+    let score = 0;
+
+    photoCards.forEach(card => {
+      card.addEventListener('click', () => {
+        scorePhoto(card);
+      });
+    });
+
+    function scorePhoto(card) {
+      if (card.style.opacity === '0') return;
+      
+      const imgSrc = card.getAttribute('data-img');
+      card.style.opacity = '0';
+      card.style.pointerEvents = 'none';
+      score++;
+
+      // Show large preview photo
+      modalImg.src = imgSrc;
+      photoModal.classList.add('active');
+
+      if (score === 3) {
+        btnGameProceed.classList.remove('hidden');
+      }
+    }
+
+    btnCloseModal.addEventListener('click', () => {
+      photoModal.classList.remove('active');
+    });
+
+    btnGameProceed.addEventListener('click', () => {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-letter').classList.remove('hidden');
+    });
+
+    // --- HEART BACKGROUND GENERATOR ---
+    const heartMosaic = document.getElementById('heartMosaic');
+    const heartMatrix = [
+      [0,1,1,0,0,1,1,0],
+      [1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,1,0],
+      [0,0,1,1,1,1,0,0],
+      [0,0,0,1,1,0,0,0]
+    ];
+
+    heartMatrix.forEach(row => {
+      row.forEach(cell => {
+        const tile = document.createElement('div');
+        tile.className = cell === 1 ? 'mosaic-tile filled' : 'mosaic-tile empty';
+        heartMosaic.appendChild(tile);
+      });
+    });
+
+    // --- PARTICLES ---
+    const particlesContainer = document.getElementById('particles-container');
+    const particleSymbols = ['♥', '★', '🌸', '✨'];
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.innerText = particleSymbols[Math.floor(Math.random() * particleSymbols.length)];
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      particle.style.fontSize = (Math.random() * 12 + 12) + 'px';
+      particlesContainer.appendChild(particle);
+      setTimeout(() => { particle.remove(); }, 7000);
+    }
+    setInterval(createParticle, 400);
+
+    // --- ENVELOPE & ARE YOU SURE BUTTON ---
+    const envelope = document.getElementById('envelope');
+    const btnOpen = document.getElementById('open');
+    let confirmStage = false;
+
+    btnOpen.addEventListener('click', () => {
+      if (!confirmStage) {
+        btnOpen.innerText = "Are you sure?";
+        confirmStage = true;
+      } else {
+        envelope.classList.remove('close');
+        envelope.classList.add('open');
+        document.body.classList.add('is-open');
+        btnOpen.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
